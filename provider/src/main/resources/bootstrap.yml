@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: nacos-simple-demo
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml # dataId = spring.application.name+file-extension  A
+        namespace: c1f1507f-bb5a-401d-967c-780fb00f9e81  # 定位namespace
+        group: DEFAULT_GROUP # 定位group
+        # 上边这边指定配置文件的方式，只能指定一个配置文件，下面介绍两种指定多种配置文件的方式
+        # 方法一　C
+#        shared-dataids: test1.yaml,test2.yaml
+        # 方法二  B
+        ext-config[0]:
+          data-id: test1.yaml
+        ext-config[1]:
+          data-id: test2.yaml
+          group-id: DEFAULT_GROUP
+        ext-config[2]:
+          data-id: test3.yaml
+          group-id: DEFAULT_GROUP # 组名，在方法一中是不可以指定组名的，所以只能使用默认组名DEFAULT_GROUP
+          refresh: true # 设置配置热启动，可以动态刷新，当然在需要的类上边需要加上@RefreshScope
+
+          # 关于配置多个配置文件，它们的优先级问题
+          # 原则上讲 A>B>C ,也就是说当多个配置文件中它们的配置内容相同时，以优先级别高的配置文件为准，在B中以ext-config[n]的n越高的为准
+      discovery:
+        server-addr: 127.0.0.1:8848
